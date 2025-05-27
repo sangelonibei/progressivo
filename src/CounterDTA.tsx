@@ -25,7 +25,7 @@ export const CounterDTA: React.FC = () => {
       console.error("Fetch error:", error);
     } else {
       setProgressivo(data.value);
-      incrementCounter();
+      await incrementCounter();
     }
 
     setLoading(false);
@@ -76,6 +76,7 @@ export const CounterDTA: React.FC = () => {
                 if (dialogRef.current) {
                   dialogRef.current.close();
                 }
+                 await incrementCounter();
               }}
             >
               Chiudi
