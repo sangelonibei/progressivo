@@ -18,7 +18,7 @@ function App() {
   const handleClick = () => {
     setProgressivo((prev) => {
       const year = new Date().getFullYear();
-      const previousYear = progressivo.substring(0, 4);
+      const previousYear = prev.substring(0, 4);
       if (Number(previousYear) != Number(year)) {
         reset();
       }
