@@ -37,15 +37,13 @@ export const Counter: React.FC = () => {
     if (progressivo === null) return;
 
     const year = new Date().getFullYear();
-    if( progressivo.split("-")[0] !== year.toString()) {
-      return resetCounter();
-    }
+  
     const counterValue = Number(progressivo.split("-")[1]);
     const newValue = counterValue + 1;
 
     const { data, error } = await supabase
       .from("counter")
-      .update({ value: `${year}-${newValue.toString().padStart(4, "0")}` })
+      .update({ value: `DC-${newValue.toString().padStart(4, "0")}-${year}`})
       .eq("id", COUNTER_ID)
       .select()
       .single<CounterRow>();
@@ -56,21 +54,6 @@ export const Counter: React.FC = () => {
       console.log("Counter updated:", data);
     }
   };
-
-  const resetCounter = async () => {
-    const { data, error } = await supabase
-      .from("counter")
-      .update({ value: `${new Date().getFullYear()}-0000` })
-      .eq("id", COUNTER_ID)
-      .select()
-      .single<CounterRow>();
-    if (error) {
-      console.error("Update error:", error);
-    } else {
-      console.log("Counter updated:", data);
-    }
-  };
-
 
   const handleClick = async () => {
     await fetchCounter();
