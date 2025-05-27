@@ -1,10 +1,23 @@
 
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import { Counter } from "./Counter";
+import { CounterDC } from "./CounterDC";
+import { CounterDTA } from "./CounterDTA";
+
+const router = createBrowserRouter([
+  {
+    path: "/dta",
+    element: <CounterDTA />,
+  },
+  {
+    path: "/dc",
+    element: <CounterDC />,
+  },
+]);
 
 function App() {
   
-return <Counter></Counter>
+return  <RouterProvider router={router} />
   
 }
 

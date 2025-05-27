@@ -1,15 +1,12 @@
-import type React from "react";
+
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "./supabase";
+import { supabase, type CounterRow } from "./supabase";
 
-export type CounterRow = {
-  id: number;
-  value: string;
-};
 
-export const Counter: React.FC = () => {
+
+export const CounterDTA: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const COUNTER_ID = 1; // Replace with actual row ID
+  const COUNTER_ID = 2; // Replace with actual row ID
   const [progressivo, setProgressivo] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -38,12 +35,12 @@ export const Counter: React.FC = () => {
 
     const year = new Date().getFullYear();
   
-    const counterValue = Number(progressivo.split("-")[1]);
+    const counterValue = Number(progressivo.split("-")[0]);
     const newValue = counterValue + 1;
 
     const { data, error } = await supabase
       .from("counter")
-      .update({ value: `DC-${newValue.toString()}-${year}`})
+      .update({ value: `${newValue.toString().padStart(6, '0')}-DTA-${year}`})
       .eq("id", COUNTER_ID)
       .select()
       .single<CounterRow>();
@@ -68,6 +65,7 @@ export const Counter: React.FC = () => {
         <p>Loading...</p>
       ) : (
         <>
+        <h1>Digital Training Academy</h1>
           <button onClick={handleClick}>Mostra progressivo</button>
           <dialog ref={dialogRef}>
             <h3>{progressivo}</h3>
@@ -88,3 +86,4 @@ export const Counter: React.FC = () => {
     </>
   );
 };
+
