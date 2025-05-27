@@ -10,7 +10,7 @@ export type CounterRow = {
 export const Counter: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const COUNTER_ID = 1; // Replace with actual row ID
-  const [progressivo, setProgressivo] = useState(`${new Date().getFullYear()}-0000`);
+  const [progressivo, setProgressivo] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export const Counter: React.FC = () => {
 
     const { data, error } = await supabase
       .from("counter")
-      .update({ value: `DC-${newValue.toString().padStart(4, "0")}-${year}`})
+      .update({ value: `DC-${newValue.toString()}-${year}`})
       .eq("id", COUNTER_ID)
       .select()
       .single<CounterRow>();
@@ -70,7 +70,7 @@ export const Counter: React.FC = () => {
         <>
           <button onClick={handleClick}>Mostra progressivo</button>
           <dialog ref={dialogRef}>
-            <h1>Progressivo: {progressivo}</h1>
+            <h3>{progressivo}</h3>
 
             <button
               onClick={ async () => {
@@ -80,7 +80,7 @@ export const Counter: React.FC = () => {
                  await incrementCounter();
               }}
             >
-              Close
+              Chiudi
             </button>
           </dialog>
         </>
