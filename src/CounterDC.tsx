@@ -25,6 +25,7 @@ export const CounterDC: React.FC = () => {
       console.error("Fetch error:", error);
     } else {
       setProgressivo(data.value);
+      incrementCounter
     }
 
     setLoading(false);
@@ -75,7 +76,7 @@ export const CounterDC: React.FC = () => {
                 if (dialogRef.current) {
                   dialogRef.current.close();
                 }
-                 await incrementCounter();
+                //  await incrementCounter();
               }}
             >
               Chiudi
