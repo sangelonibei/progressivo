@@ -4,13 +4,17 @@ import { supabase, type CounterRow } from "./supabase";
 const COUNTER_ID = 2;
 
 export const CounterDTA: React.FC = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [progressivo, setProgressivo] = useState("");
+  const [showDialog, setShowDialog] = useState(false); // trigger per aprire il popup
   const dialogRef = useRef<HTMLDialogElement>(null);
 
+  // Mostra il dialog appena dopo il rendering
   useEffect(() => {
-    setLoading(false); // inizialmente non facciamo fetch, solo al click
-  }, []);
+    if (showDialog && dialogRef.current) {
+      dialogRef.current.showModal();
+    }
+  }, [showDialog]);
 
   const fetchCounter = async (): Promise<string | null> => {
     const { data, error } = await supabase
@@ -33,17 +37,15 @@ export const CounterDTA: React.FC = () => {
     const newNumeric = (numericPart + 1).toString().padStart(6, "0");
     const newValue = `${newNumeric}-DTA-${year}`;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("counter")
       .update({ value: newValue })
-      .eq("id", COUNTER_ID)
-      .select()
-      .single<CounterRow>();
+      .eq("id", COUNTER_ID);
 
     if (error) {
       console.error("Update error:", error);
     } else {
-      console.log("Counter updated:", data);
+      console.log("Counter incrementato:", newValue);
     }
   };
 
@@ -52,30 +54,31 @@ export const CounterDTA: React.FC = () => {
     const value = await fetchCounter();
     if (value) {
       setProgressivo(value);
-      if (dialogRef.current) dialogRef.current.showModal();
+      setShowDialog(true); // trigger per aprire
     }
     setLoading(false);
   };
 
   const handleClose = async () => {
-    if (dialogRef.current) dialogRef.current.close();
-    await incrementCounter(progressivo); // usa il valore mostrato
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
+    setShowDialog(false);
+    await incrementCounter(progressivo);
   };
 
   return (
     <>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          <h1>Digital Training Academy</h1>
-          <button onClick={handleClick}>Mostra progressivo</button>
-          <dialog ref={dialogRef}>
-            <h3>{progressivo}</h3>
-            <button onClick={handleClose}>Chiudi</button>
-          </dialog>
-        </>
-      )}
+      <h1>Digital Training Academy</h1>
+      <button onClick={handleClick} disabled={loading}>
+        {loading ? "Caricamento..." : "Mostra progressivo"}
+      </button>
+
+      {/* Il dialog è sempre nel DOM, ma viene mostrato via showModal */}
+      <dialog ref={dialogRef}>
+        <h3>{progressivo}</h3>
+        <button onClick={handleClose}>Chiudi</button>
+      </dialog>
     </>
   );
 };
