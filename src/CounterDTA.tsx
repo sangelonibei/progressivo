@@ -15,43 +15,41 @@ export const CounterDTA: React.FC = () => {
   }, []);
 
   const fetchCounter = async () => {
-    const { data, error } = await supabase
-      .from("counter")
-      .select("value")
-      .eq("id", COUNTER_ID)
-      .single<CounterRow>();
+  const { data, error } = await supabase
+    .from("counter")
+    .select("value")
+    .eq("id", COUNTER_ID)
+    .single<CounterRow>();
 
-    if (error) {
-      console.error("Fetch error:", error);
-    } else {
-      setProgressivo(data.value);
-      await incrementCounter();
-    }
+  if (error) {
+    console.error("Fetch error:", error);
+  } else {
+    setProgressivo(data.value);
+    await incrementCounter(data.value); // usa direttamente il valore ottenuto
+  }
 
-    setLoading(false);
-  };
+  setLoading(false);
+};
 
-  const incrementCounter = async () => {
-    if (progressivo === null) return;
+const incrementCounter = async (currentValue: string) => {
+  const year = new Date().getFullYear();
 
-    const year = new Date().getFullYear();
-  
-    const counterValue = Number(progressivo.split("-")[0]);
-    const newValue = counterValue + 1;
+  const counterValue = Number(currentValue.split("-")[0]);
+  const newValue = counterValue + 1;
 
-    const { data, error } = await supabase
-      .from("counter")
-      .update({ value: `${newValue.toString().padStart(6, '0')}-DTA-${year}`})
-      .eq("id", COUNTER_ID)
-      .select()
-      .single<CounterRow>();
+  const { data, error } = await supabase
+    .from("counter")
+    .update({ value: `${newValue.toString().padStart(6, '0')}-DTA-${year}` })
+    .eq("id", COUNTER_ID)
+    .select()
+    .single<CounterRow>();
 
-    if (error) {
-      console.error("Update error:", error);
-    } else {
-      console.log("Counter updated:", data);
-    }
-  };
+  if (error) {
+    console.error("Update error:", error);
+  } else {
+    console.log("Counter updated:", data);
+  }
+};
 
   const handleClick = async () => {
     await fetchCounter();
