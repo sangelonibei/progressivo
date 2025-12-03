@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/dc",
+      "destination": "/public/dc.html"
+    },
+    {
+      "source": "/dta",
+      "destination": "/public/dta.html"
+    }
+  ]
+}
